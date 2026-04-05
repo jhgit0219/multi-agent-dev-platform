@@ -10,3 +10,13 @@ Skills: `skills/`
 
 Design doc: `docs/plans/2026-04-05-claude-dev-studio-design.md`
 Implementation plan: `docs/plans/2026-04-05-claude-dev-studio-implementation.md`
+
+## Commands
+
+```bash
+# Install all workspace dependencies
+npm install
+
+# Run orchestrator tests
+cd orchestrator && npx vitest run
+```

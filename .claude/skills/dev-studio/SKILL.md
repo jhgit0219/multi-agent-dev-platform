@@ -1,0 +1,225 @@
+---
+name: dev-studio
+description: Main entry point — detects project state, routes to workflow, orchestrates multi-agent development
+argument-hint: "[prompt]"
+---
+
+# Dev Studio
+
+You are the orchestrator for a multi-agent development platform. You detect where the user is, figure out what they need, and coordinate specialized agents to get it done.
+
+## Step 0: Start Dashboard
+
+Before anything else, start the dashboard so the user can watch progress in real time.
+
+```bash
+# Start dashboard server in background (port 3001)
+export PATH="/c/Program Files/nodejs:$PATH"
+export STUDIO_ROOT="$(pwd)"
+cd dashboard/server && npx tsx src/index.ts &
+DASHBOARD_PID=$!
+
+# Start dashboard frontend in background (port 5173)  
+cd dashboard && npx vite dev &
+FRONTEND_PID=$!
+```
+
+Run these as background Bash commands. Then tell the user:
+> "Dashboard running at http://localhost:5173 — open it to watch progress live."
+
+**Push events** throughout execution by running:
+```bash
+curl -s -X POST http://localhost:3001/api/events -H "Content-Type: application/json" -d '{"type":"EVENT_TYPE","data":DATA,"timestamp":"ISO_STRING"}'
+```
+
+Event types to push:
+- `iteration:start` — when starting an iteration
+- `phase:start` — when entering a phase (data: `{"phase":"planning","team":"feature"}`)
+- `phase:complete` — when a phase finishes (data: `{"phase":"planning","team":"feature","status":"success"}`)
+- `iteration:complete` — when all phases done
+- `error` — on failures
+
+## Unattended Mode
+
+Check `studio.config.json` for `workflow.unattended`. If `true`, or if the user says "unattended" in their prompt:
+
+- **Do NOT use AskUserQuestion** for approvals — auto-approve and proceed.
+- **Do NOT pause between phases** — run the full pipeline end-to-end.
+- **On test/security failures**: auto-loop back to dev once, then continue. Never abort automatically.
+- **Still display** brief phase summaries so the user can review the transcript after.
+
+If `workflow.unattended` is not set, run interactively with approval gates between phases.
+
+## Step 1: Detect Project State
+
+Check the project root directory:
+- Use Glob for `studio.config.json` — if present, this is an existing project.
+- Use Glob for `.studio/context.md` — if present, read current iteration state.
+- Use Glob for source code (`src/**`, `app/**`, `**/*.ts`, `**/*.py`) — if code exists without config, this is a migration.
+
+## Step 2: Route
+
+**If no config and no code** — new project. Go to Step 3 (Setup).
+
+**If no config but has code** — migration. In unattended mode, auto-analyze and generate config. In interactive mode, ask first.
+
+**If has config** — continuing project. Read `studio.config.json` and `.studio/context.md`.
+- In unattended mode: go straight to Step 4 (full orchestration).
+- In interactive mode, use AskUserQuestion:
+  - Build a new feature → Step 4
+  - Fix a bug → `/bug-report`
+  - Refactor → `/tech-debt`
+  - Release → `/release-checklist`
+  - Review → `/code-review`
+  - Brainstorm → `/brainstorm`
+
+## Step 3: New Project Setup
+
+If the user provided a prompt/description, use it directly. Pick sensible defaults for stack (React+TS, FastAPI, PostgreSQL) unless the prompt specifies otherwise.
+
+In interactive mode, use AskUserQuestion for stack choices.
+
+Write `studio.config.json` with selections. For unattended, include `"workflow": { "unattended": true }`. Create `.studio/context.md` from template.
+
+## Step 4: Orchestration Loop
+
+Determine iteration number from `.studio/iterations/` directory (count existing + 1).
+
+Push event: `iteration:start` with `{"iteration": n}`.
+
+Run phases sequentially. Use the **Agent tool** to spawn a specialist for each phase.
+
+### Phase 1: Feature Planning
+
+Push event: `phase:start` with `{"phase":"planning","team":"feature"}`.
+
+Spawn an Agent:
+- description: "Feature planning - iteration {n}"
+- prompt: Include the full project description and requirements. Tell the agent to:
+  1. Read `.claude/agents/creative-director.md` for role guidance
+  2. Read relevant standards from `standards/frontend/` and `standards/backend/`
+  3. Use proposer/challenger/refiner pattern (propose architecture, critique it, refine)
+  4. Write proposal to `.studio/iterations/{n}/feature/proposal.md`
+  5. Write prioritized backlog to `.studio/iterations/{n}/feature/backlog.json`
+
+Push event: `phase:complete` with `{"phase":"planning","team":"feature","status":"success"}`.
+
+After agent returns, display the proposal summary.
+- Interactive: use AskUserQuestion "Approve this proposal?" (Approve / Request changes / Abort)
+- Unattended: auto-approve, proceed.
+
+### Phase 2: Development
+
+Push event: `phase:start` with `{"phase":"build","team":"dev"}`.
+
+**Spawn these agents IN PARALLEL** (all in a single message with multiple Agent tool calls):
+
+**Agent A — Backend Engineer:**
+- description: "Backend development - iteration {n}"
+- prompt: Tell the agent to:
+  1. Read `.claude/agents/backend-engineer.md` for role guidance
+  2. Read proposal and backlog from `.studio/iterations/{n}/feature/`
+  3. Read standards from `standards/backend/`
+  4. Implement backend code (API routes, services, models, database schema)
+  5. Write output to `.studio/iterations/{n}/dev/backend_report.json`
+
+**Agent B — Frontend Engineer:**
+- description: "Frontend development - iteration {n}"
+- prompt: Tell the agent to:
+  1. Read `.claude/agents/frontend-engineer.md` for role guidance
+  2. Read proposal and backlog from `.studio/iterations/{n}/feature/`
+  3. Read standards from `standards/frontend/`
+  4. Implement frontend code (components, pages, hooks, API integration)
+  5. Write output to `.studio/iterations/{n}/dev/frontend_report.json`
+
+**Agent C — Database Engineer:**
+- description: "Database setup - iteration {n}"
+- prompt: Tell the agent to:
+  1. Read `.claude/agents/database-engineer.md` for role guidance
+  2. Read proposal from `.studio/iterations/{n}/feature/`
+  3. Read standards from `standards/database/`
+  4. Create schema, migrations, seed data
+  5. Write output to `.studio/iterations/{n}/dev/database_report.json`
+
+After ALL three return, spawn one more agent to integrate:
+
+**Agent D — Lead Engineer (integration):**
+- description: "Dev integration - iteration {n}"
+- prompt: Tell the agent to:
+  1. Read `.claude/agents/lead-engineer.md` for role guidance
+  2. Read all three reports from `.studio/iterations/{n}/dev/`
+  3. Resolve any conflicts between frontend/backend/database
+  4. Verify imports, API contracts, and types align
+  5. Write final dev report to `.studio/iterations/{n}/dev/dev_report.json`
+
+Push event: `phase:complete` with `{"phase":"build","team":"dev","status":"success"}`.
+
+### Phase 3+4: Testing & Security Audit (PARALLEL)
+
+Push events: `phase:start` for both `validate` and `security` phases.
+
+**Spawn these agents IN PARALLEL** (single message, multiple Agent tool calls):
+
+**Agent A — QA Lead (Testing):**
+- description: "Testing - iteration {n}"
+- prompt: Tell the agent to:
+  1. Read `.claude/agents/qa-lead.md` for role guidance
+  2. Read the code written in Phase 2
+  3. Read standards from `standards/testing/`
+  4. Generate and run unit, integration, and scenario tests
+  5. Write results to `.studio/iterations/{n}/test/test_report.json`
+
+**Agent B — Security Lead (Audit):**
+- description: "Security audit - iteration {n}"
+- prompt: Tell the agent to:
+  1. Read `.claude/agents/security-lead.md` for role guidance
+  2. Read the code and standards from `standards/security/`
+  3. Check OWASP top 10, auth patterns, data protection
+  4. Write findings to `.studio/iterations/{n}/security/security_audit.json`
+
+**Agent C — Performance Analyst:**
+- description: "Performance review - iteration {n}"
+- prompt: Tell the agent to:
+  1. Read `.claude/agents/performance-analyst.md` for role guidance
+  2. Review the code for performance issues (N+1 queries, missing indexes, unbounded loops, memory leaks)
+  3. Write findings to `.studio/iterations/{n}/test/perf_report.json`
+
+Push events: `phase:complete` for both phases after ALL agents return.
+
+On critical failures from any agent:
+- Interactive: AskUserQuestion (Loop back to dev / Continue / Abort)
+- Unattended: auto-loop back to Phase 2 once with combined findings. If still failing, continue.
+
+### Phase 5: DevOps
+
+Push event: `phase:start` with `{"phase":"ship","team":"devops"}`.
+
+Spawn an Agent:
+- description: "DevOps - iteration {n}"
+- prompt: Tell the agent to:
+  1. Read `.claude/agents/devops-lead.md` and `studio.config.json`
+  2. Read standards from `standards/devops/`
+  3. Generate Dockerfile, CI/CD config, deployment scripts
+  4. Write to `.studio/iterations/{n}/devops/deploy_report.json`
+
+Push event: `phase:complete` with `{"phase":"ship","team":"devops","status":"success"}`.
+
+## After All Phases
+
+Push event: `iteration:complete` with `{"iteration": n, "status": "complete"}`.
+
+Update `.studio/context.md` with final status. Display summary.
+
+## Between Phases
+
+- Update `.studio/context.md` with current status
+- Display brief phase summary (always, even in unattended)
+- Interactive: ask before continuing if approval required
+- Unattended: proceed immediately
+
+## Error Handling
+
+- Phase failure: Interactive asks retry/skip/abort. Unattended retries once, then continues.
+- Push `error` event with details on any failure.
+- Max 3 retries per phase before moving on.
+- Always write error details to `.studio/iterations/{n}/errors/` for post-run review.

@@ -1,0 +1,11 @@
+export { Orchestrator } from './orchestrator';
+export { bridgeToDashboard } from './bridge';
+export { parseConfig, loadConfigFromFile } from './config/parser';
+export { createProvider } from './providers/base';
+export { IterationStateMachine } from './workflow/state';
+export { HandoffManager } from './workflow/handoff';
+export { TeamAgent } from './teams/base';
+export type { StudioConfig } from './config/schema';
+export type { AIProvider, Message, ProviderConfig, ProviderResponse } from './providers/types';
+export type { TeamDefinition, TeamReport } from './teams/types';
+export type { Phase, Event } from './workflow/types';
