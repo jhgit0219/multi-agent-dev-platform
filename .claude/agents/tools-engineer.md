@@ -1,6 +1,6 @@
 ---
 name: tools-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: Developer tooling specialist for build systems, linters, code generators, CLI tools, and developer experience.
 allowed-tools:
   - Read

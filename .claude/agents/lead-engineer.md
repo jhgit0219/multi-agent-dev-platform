@@ -1,6 +1,6 @@
 ---
 name: lead-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: Engineering team lead responsible for code quality, PR reviews, technical mentoring, and architecture implementation.
 allowed-tools:
   - Read

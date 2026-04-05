@@ -1,6 +1,6 @@
 ---
 name: devops-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: DevOps specialist for CI/CD pipelines, Docker, deployment automation, and environment management.
 allowed-tools:
   - Read

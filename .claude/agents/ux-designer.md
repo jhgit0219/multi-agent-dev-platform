@@ -1,6 +1,6 @@
 ---
 name: ux-designer
-model: claude-sonnet-4-6
+model: sonnet
 description: User experience specialist for user research, flows, wireframes, usability testing, and information architecture.
 allowed-tools:
   - Read

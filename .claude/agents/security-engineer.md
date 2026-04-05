@@ -1,6 +1,6 @@
 ---
 name: security-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: Security implementation specialist for auth systems, encryption, secrets management, and dependency auditing.
 allowed-tools:
   - Read

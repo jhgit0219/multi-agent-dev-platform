@@ -1,6 +1,6 @@
 ---
 name: creative-director
-model: claude-opus-4-6
+model: opus
 description: Product vision authority resolving design conflicts and ensuring feature coherence
 allowed-tools:
   - Read

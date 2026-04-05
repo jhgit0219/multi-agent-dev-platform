@@ -1,6 +1,6 @@
 ---
 name: producer
-model: claude-opus-4-6
+model: opus
 description: Project coordinator managing scheduling, risk, resource allocation, and stakeholder communication
 allowed-tools:
   - Read

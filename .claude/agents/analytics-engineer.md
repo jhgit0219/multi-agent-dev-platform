@@ -1,6 +1,6 @@
 ---
 name: analytics-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: Data pipeline specialist for dashboards, event tracking, and A/B testing infrastructure.
 allowed-tools:
   - Read

@@ -1,6 +1,6 @@
 ---
 name: technical-director
-model: claude-opus-4-6
+model: opus
 description: Architecture authority governing technology decisions, system design, and performance standards
 allowed-tools:
   - Read

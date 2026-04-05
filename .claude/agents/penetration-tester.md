@@ -1,6 +1,6 @@
 ---
 name: penetration-tester
-model: claude-sonnet-4-6
+model: sonnet
 description: Offensive security specialist for OWASP testing, injection testing, auth bypass attempts, and security reporting.
 allowed-tools:
   - Read

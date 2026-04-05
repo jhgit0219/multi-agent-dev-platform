@@ -1,6 +1,6 @@
 ---
 name: devops-lead
-model: claude-sonnet-4-6
+model: sonnet
 description: DevOps/Platform lead responsible for CI/CD, infrastructure, deployment, monitoring, and incident response.
 allowed-tools:
   - Read

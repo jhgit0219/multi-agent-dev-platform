@@ -1,6 +1,6 @@
 ---
 name: e2e-tester
-model: claude-sonnet-4-6
+model: sonnet
 description: End-to-end testing specialist for Playwright/Cypress, user flow validation, and cross-browser testing.
 allowed-tools:
   - Read

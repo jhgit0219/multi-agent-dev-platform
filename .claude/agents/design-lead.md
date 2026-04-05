@@ -1,6 +1,6 @@
 ---
 name: design-lead
-model: claude-sonnet-4-6
+model: sonnet
 description: Product design lead responsible for feature specifications, user flows, wireframes, and design system maintenance.
 allowed-tools:
   - Read

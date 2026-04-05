@@ -1,6 +1,6 @@
 ---
 name: qa-lead
-model: claude-sonnet-4-6
+model: sonnet
 description: Quality assurance lead responsible for test strategy, coverage requirements, bug triage, and release quality gates.
 allowed-tools:
   - Read

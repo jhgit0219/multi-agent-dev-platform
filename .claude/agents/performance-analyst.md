@@ -1,6 +1,6 @@
 ---
 name: performance-analyst
-model: claude-sonnet-4-6
+model: sonnet
 description: Performance testing specialist for load testing, profiling, bottleneck identification, and optimization recommendations.
 allowed-tools:
   - Read

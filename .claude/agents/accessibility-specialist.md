@@ -1,6 +1,6 @@
 ---
 name: accessibility-specialist
-model: claude-sonnet-4-6
+model: sonnet
 description: WCAG compliance specialist for screen reader testing, keyboard navigation, color contrast, and ARIA patterns.
 allowed-tools:
   - Read

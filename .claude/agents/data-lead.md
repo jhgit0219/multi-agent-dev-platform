@@ -1,6 +1,6 @@
 ---
 name: data-lead
-model: claude-sonnet-4-6
+model: sonnet
 description: Data team lead responsible for database design, data pipelines, analytics, and data quality.
 allowed-tools:
   - Read

@@ -1,6 +1,6 @@
 ---
 name: ui-engineer
-model: claude-sonnet-4-6
+model: opus
 description: UI implementation specialist for design system components, animations, responsive layouts, and theming.
 allowed-tools:
   - Read

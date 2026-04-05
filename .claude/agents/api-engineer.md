@@ -1,6 +1,6 @@
 ---
 name: api-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: API design specialist for REST/GraphQL design, versioning, documentation, and contract testing.
 allowed-tools:
   - Read

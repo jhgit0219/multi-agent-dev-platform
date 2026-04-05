@@ -1,6 +1,6 @@
 ---
 name: infrastructure-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: Cloud infrastructure specialist for Terraform, Docker, Kubernetes, networking, and cost optimization.
 allowed-tools:
   - Read

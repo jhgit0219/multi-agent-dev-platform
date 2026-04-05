@@ -1,6 +1,6 @@
 ---
 name: technical-writer
-model: claude-sonnet-4-6
+model: sonnet
 description: Documentation specialist for API docs, user guides, tutorials, architecture diagrams, and changelogs.
 allowed-tools:
   - Read

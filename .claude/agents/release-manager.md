@@ -1,6 +1,6 @@
 ---
 name: release-manager
-model: claude-sonnet-4-6
+model: sonnet
 description: Release coordination lead responsible for version management, changelog, deployment scheduling, and rollback plans.
 allowed-tools:
   - Read

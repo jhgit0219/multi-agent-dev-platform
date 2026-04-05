@@ -1,6 +1,6 @@
 ---
 name: ml-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: ML integration specialist for model serving, feature stores, training pipelines, and LLM integration.
 allowed-tools:
   - Read

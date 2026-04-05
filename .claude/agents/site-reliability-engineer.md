@@ -1,6 +1,6 @@
 ---
 name: site-reliability-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: SRE specialist for monitoring, alerting, incident response, SLO/SLA management, and runbooks.
 allowed-tools:
   - Read

@@ -1,6 +1,6 @@
 ---
 name: backend-engineer
-model: claude-sonnet-4-6
+model: sonnet
 description: Python/FastAPI specialist for API design, service layer implementation, database integration, and async patterns.
 allowed-tools:
   - Read

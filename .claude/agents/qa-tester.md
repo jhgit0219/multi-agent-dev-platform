@@ -1,6 +1,6 @@
 ---
 name: qa-tester
-model: claude-sonnet-4-6
+model: sonnet
 description: Test execution specialist for unit/integration/e2e test writing, bug reproduction, and regression testing.
 allowed-tools:
   - Read

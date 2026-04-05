@@ -1,6 +1,6 @@
 ---
 name: documentation-lead
-model: claude-sonnet-4-6
+model: sonnet
 description: Documentation lead responsible for API docs, user guides, architecture docs, and onboarding materials.
 allowed-tools:
   - Read

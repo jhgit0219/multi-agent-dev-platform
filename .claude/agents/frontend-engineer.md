@@ -1,6 +1,6 @@
 ---
 name: frontend-engineer
-model: claude-sonnet-4-6
+model: opus
 description: React/TypeScript specialist for component architecture, state management, responsive design, and accessibility.
 allowed-tools:
   - Read

@@ -1,6 +1,6 @@
 ---
 name: security-lead
-model: claude-sonnet-4-6
+model: sonnet
 description: Security team lead responsible for threat modeling, vulnerability management, compliance, and security reviews.
 allowed-tools:
   - Read
