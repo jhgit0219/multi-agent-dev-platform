@@ -67,10 +67,31 @@ export default function MissionControl() {
       .then((data: { agents?: AgentInfo[] }) => {
         if (data.agents) setAgents(data.agents);
       })
-      .catch(() => {
-        // Agents endpoint may return empty
-      });
+      .catch(() => {});
   }, []);
+
+  // Load agent history when project changes
+  useEffect(() => {
+    if (!selectedProject) return;
+    authFetch(`/api/projects/${selectedProject}/agents/history`)
+      .then((res) => res.json())
+      .then((data: { history?: Record<string, Message[]> }) => {
+        if (data.history) {
+          setAgentMessages(data.history);
+          // Update agent statuses based on whether they have history
+          setAgents((prev) =>
+            prev.map((a) => {
+              const msgs = data.history?.[a.id];
+              if (msgs && msgs.length > 0) {
+                return { ...a, status: 'complete' as const, lastMessage: msgs[msgs.length - 1].text.slice(0, 100), lastActivity: msgs[msgs.length - 1].timestamp };
+              }
+              return a;
+            }),
+          );
+        }
+      })
+      .catch(() => {});
+  }, [selectedProject]);
 
   // Handle WebSocket events
   useEffect(() => {
