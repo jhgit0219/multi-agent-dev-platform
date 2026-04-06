@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'node:http';
+import { existsSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
 import { initDb, closeDb } from './auth/db.js';
 import authRoutes from './auth/routes.js';
 import reportRoutes from './reports/routes.js';
@@ -29,8 +31,23 @@ export function startServer(port = 3001, dbPath?: string) {
 
 export { app, server, broadcast };
 
+function findProjectRoot(): string {
+  let dir = process.cwd();
+  while (dir !== dirname(dir)) {
+    if (existsSync(resolve(dir, '.studio')) || existsSync(resolve(dir, 'studio.config.json')) || existsSync(resolve(dir, 'CLAUDE.md'))) {
+      return dir;
+    }
+    dir = dirname(dir);
+  }
+  return process.cwd();
+}
+
 // Start if run directly
 const isMain = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'));
 if (isMain) {
+  if (!process.env.STUDIO_ROOT) {
+    process.env.STUDIO_ROOT = findProjectRoot();
+  }
+  console.log(`Studio root: ${process.env.STUDIO_ROOT}`);
   startServer();
 }
