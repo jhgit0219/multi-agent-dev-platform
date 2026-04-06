@@ -184,7 +184,7 @@ export default function MissionControl() {
   }));
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
       <TopBar
         projects={projects}
         selectedProject={selectedProject}

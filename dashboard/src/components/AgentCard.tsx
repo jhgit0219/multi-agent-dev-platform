@@ -149,52 +149,73 @@ export default function AgentCard({
         </div>
       )}
 
-      {/* Expanded section */}
+      {/* Expanded chat section */}
       {expanded && (
-        <div style={{ marginTop: 'var(--gap-md)', borderTop: '1px solid var(--border-default)', paddingTop: 'var(--gap-md)' }}>
-          {/* Description */}
-          {agent.description && (
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: 'var(--gap-sm)' }}>
-              {agent.description}
-            </div>
-          )}
-
-          {/* Message history */}
+        <div
+          style={{
+            marginTop: 'var(--gap-md)',
+            borderTop: '1px solid var(--border-default)',
+            paddingTop: 'var(--gap-md)',
+            display: 'flex',
+            flexDirection: 'column',
+            height: 350,
+          }}
+        >
+          {/* Chat message area — scrollable */}
           <div
             style={{
-              maxHeight: 300,
+              flex: 1,
               overflowY: 'auto',
-              marginBottom: 'var(--gap-sm)',
               display: 'flex',
               flexDirection: 'column',
-              gap: '0.3rem',
+              gap: '0.4rem',
+              paddingRight: '0.3rem',
+              scrollbarGutter: 'stable',
             }}
           >
-            {messages.length === 0 && (
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                No messages yet
+            {messages.length === 0 ? (
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic', padding: '1rem 0', textAlign: 'center' }}>
+                No activity yet
               </div>
+            ) : (
+              messages.map((msg, i) => (
+                <div
+                  key={i}
+                  style={{
+                    fontSize: '0.8rem',
+                    padding: '0.5rem 0.6rem',
+                    borderRadius: 'var(--radius-sm)',
+                    background: msg.from === 'user' ? 'rgba(79, 70, 229, 0.15)' : 'var(--bg-tertiary)',
+                    borderLeft: msg.from === 'user'
+                      ? '3px solid var(--accent-primary)'
+                      : '3px solid var(--status-complete)',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <div style={{
+                    fontSize: '0.7rem',
+                    color: msg.from === 'user' ? 'var(--text-accent)' : 'var(--status-active)',
+                    fontWeight: 700,
+                    marginBottom: '0.2rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}>
+                    {msg.from === 'user' ? 'You' : agent.name}
+                  </div>
+                  <div style={{ color: 'var(--text-primary)' }}>{msg.text}</div>
+                  <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                    {new Date(msg.timestamp).toLocaleTimeString()}
+                  </div>
+                </div>
+              ))
             )}
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                style={{
-                  fontSize: '0.8rem',
-                  color: msg.from === 'user' ? 'var(--text-accent)' : 'var(--text-primary)',
-                  padding: '0.3rem 0.5rem',
-                  borderRadius: 'var(--radius-sm)',
-                  background: msg.from === 'user' ? 'rgba(79, 70, 229, 0.1)' : 'rgba(255,255,255,0.03)',
-                }}
-              >
-                <span style={{ fontWeight: 600, marginRight: '0.3rem' }}>{msg.from}:</span>
-                {msg.text}
-              </div>
-            ))}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Chat input */}
-          <div style={{ display: 'flex', gap: 'var(--gap-sm)' }}>
+          {/* Chat input — fixed at bottom */}
+          <div style={{ display: 'flex', gap: 'var(--gap-sm)', marginTop: 'var(--gap-sm)', flexShrink: 0 }}>
             <input
               type="text"
               value={input}
@@ -207,7 +228,7 @@ export default function AgentCard({
                 color: 'var(--text-primary)',
                 border: '1px solid var(--border-default)',
                 borderRadius: 'var(--radius-sm)',
-                padding: '0.4rem 0.6rem',
+                padding: '0.5rem 0.8rem',
                 fontSize: '0.8rem',
                 outline: 'none',
               }}
@@ -219,7 +240,7 @@ export default function AgentCard({
                 color: '#fff',
                 border: 'none',
                 borderRadius: 'var(--radius-sm)',
-                padding: '0.4rem 0.8rem',
+                padding: '0.5rem 1rem',
                 fontSize: '0.8rem',
                 cursor: 'pointer',
                 fontWeight: 600,
