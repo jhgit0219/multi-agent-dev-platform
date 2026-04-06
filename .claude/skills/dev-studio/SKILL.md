@@ -47,6 +47,22 @@ Event types to push:
 - `iteration:complete` — when all phases done
 - `error` — on failures
 
+## Agent Progress Updates
+
+**Every agent you spawn MUST include this instruction in its prompt:**
+
+> "As you work, periodically push short progress updates to the dashboard so the user can monitor you. Use this command:
+> `curl -s -X POST http://localhost:3001/api/agents/{your-agent-id}/status -H 'Content-Type: application/json' -d '{"status":"active","message":"YOUR_MESSAGE"}'`
+>
+> Push an update:
+> - When you start reading files or analyzing something: 'Reading proposal and backlog...'
+> - When you start a major step: 'Implementing auth routes (3 of 8 stories)...'
+> - When something notable happens: 'Found 12 API endpoints to implement'
+> - When you finish a sub-task: 'Auth module complete. Starting data models...'
+> - Keep messages under 100 chars. No fluff. Just what you're doing."
+>
+> Replace `{your-agent-id}` with the actual agent ID for that agent.
+
 ## Unattended Mode
 
 Check `studio.config.json` for `workflow.unattended`. If `true`, or if the user says "unattended" in their prompt:

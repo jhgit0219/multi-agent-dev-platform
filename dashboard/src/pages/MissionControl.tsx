@@ -164,31 +164,6 @@ export default function MissionControl() {
     setCollapsedAgents(new Set());
   }, []);
 
-  const handleSendMessage = useCallback(
-    async (agentId: string, message: string) => {
-      // Optimistically add to local state
-      const msg: Message = {
-        from: 'user',
-        text: message,
-        timestamp: new Date().toISOString(),
-      };
-      setAgentMessages((prev) => ({
-        ...prev,
-        [agentId]: [...(prev[agentId] ?? []), msg],
-      }));
-
-      try {
-        await authFetch(`/api/agents/${agentId}/message`, {
-          method: 'POST',
-          body: JSON.stringify({ message }),
-        });
-      } catch {
-        // Message send failed silently
-      }
-    },
-    [],
-  );
-
   // Map WsEvents to LogStream format
   const logEvents = events.map((e) => ({
     type: e.type,
@@ -214,7 +189,6 @@ export default function MissionControl() {
         viewMode={viewMode}
         collapsedIds={collapsedAgents}
         onToggleExpand={handleToggleExpand}
-        onSendMessage={handleSendMessage}
         agentMessages={agentMessages}
       />
       <LogStream

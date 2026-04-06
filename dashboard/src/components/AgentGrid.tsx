@@ -17,7 +17,6 @@ interface AgentGridProps {
   viewMode: 'all' | 'tier' | 'department';
   collapsedIds: Set<string>;
   onToggleExpand: (id: string) => void;
-  onSendMessage: (agentId: string, message: string) => void;
   agentMessages: Record<string, Array<{ from: string; text: string; timestamp: string }>>;
 }
 
@@ -71,7 +70,6 @@ function renderCard(
   agent: AgentInfo,
   collapsedIds: Set<string>,
   onToggleExpand: (id: string) => void,
-  onSendMessage: (agentId: string, message: string) => void,
   agentMessages: Record<string, Array<{ from: string; text: string; timestamp: string }>>,
 ) {
   return (
@@ -80,7 +78,6 @@ function renderCard(
       agent={agent}
       expanded={!collapsedIds.has(agent.id)}
       onToggleExpand={() => onToggleExpand(agent.id)}
-      onSendMessage={onSendMessage}
       messages={agentMessages[agent.id] ?? []}
     />
   );
@@ -91,7 +88,6 @@ export default function AgentGrid({
   viewMode,
   collapsedIds,
   onToggleExpand,
-  onSendMessage,
   agentMessages,
 }: AgentGridProps) {
   if (viewMode === 'all') {
@@ -99,7 +95,7 @@ export default function AgentGrid({
     return (
       <div style={{ overflowY: 'auto', flex: 1, padding: 'var(--gap-lg)' }}>
         <div style={gridStyle}>
-          {sorted.map((a) => renderCard(a, collapsedIds, onToggleExpand, onSendMessage, agentMessages))}
+          {sorted.map((a) => renderCard(a, collapsedIds, onToggleExpand, agentMessages))}
         </div>
       </div>
     );
@@ -127,7 +123,7 @@ export default function AgentGrid({
             <div key={tier}>
               <div style={sectionHeaderStyle(idx === 0)}>{TIER_LABELS[tier]}</div>
               <div style={gridStyle}>
-                {sortActiveFirst(group).map((a) => renderCard(a, collapsedIds, onToggleExpand, onSendMessage, agentMessages))}
+                {sortActiveFirst(group).map((a) => renderCard(a, collapsedIds, onToggleExpand, agentMessages))}
               </div>
             </div>
           );
@@ -162,7 +158,7 @@ export default function AgentGrid({
           <div key={dept}>
             <div style={sectionHeaderStyle(first)}>{DEPT_LABELS[dept] ?? dept.toUpperCase()}</div>
             <div style={gridStyle}>
-              {sortActiveFirst(group).map((a) => renderCard(a, collapsedIds, onToggleExpand, onSendMessage, agentMessages))}
+              {sortActiveFirst(group).map((a) => renderCard(a, collapsedIds, onToggleExpand, agentMessages))}
             </div>
           </div>
         );
