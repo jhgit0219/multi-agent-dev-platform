@@ -27,7 +27,7 @@ describe('Auth', () => {
 
   it('first user registration creates admin', async () => {
     const res = await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({ email: 'admin@test.com', password: 'pass123' });
 
     expect(res.status).toBe(201);
@@ -37,11 +37,11 @@ describe('Auth', () => {
 
   it('second user registration creates viewer', async () => {
     await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({ email: 'admin@test.com', password: 'pass123' });
 
     const res = await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({ email: 'viewer@test.com', password: 'pass456' });
 
     expect(res.status).toBe(201);
@@ -50,11 +50,11 @@ describe('Auth', () => {
 
   it('login returns valid JWT', async () => {
     await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({ email: 'user@test.com', password: 'pass123' });
 
     const res = await request(app)
-      .post('/auth/login')
+      .post('/api/auth/login')
       .send({ email: 'user@test.com', password: 'pass123' });
 
     expect(res.status).toBe(200);
@@ -66,11 +66,11 @@ describe('Auth', () => {
 
   it('invalid credentials rejected', async () => {
     await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({ email: 'user@test.com', password: 'pass123' });
 
     const res = await request(app)
-      .post('/auth/login')
+      .post('/api/auth/login')
       .send({ email: 'user@test.com', password: 'wrong' });
 
     expect(res.status).toBe(401);
@@ -78,14 +78,14 @@ describe('Auth', () => {
   });
 
   it('auth middleware rejects missing token', async () => {
-    const res = await request(app).get('/auth/me');
+    const res = await request(app).get('/api/auth/me');
 
     expect(res.status).toBe(401);
   });
 
   it('auth middleware rejects invalid token', async () => {
     const res = await request(app)
-      .get('/auth/me')
+      .get('/api/auth/me')
       .set('Authorization', 'Bearer invalid-token');
 
     expect(res.status).toBe(401);
@@ -94,19 +94,19 @@ describe('Auth', () => {
   it('role middleware rejects unauthorized roles', async () => {
     // Register admin
     const adminRes = await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({ email: 'admin@test.com', password: 'pass123' });
     const adminToken = adminRes.body.token;
 
     // Register viewer
     const viewerRes = await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({ email: 'viewer@test.com', password: 'pass456' });
     const viewerToken = viewerRes.body.token;
 
     // Viewer tries admin-only route
     const res = await request(app)
-      .post('/auth/invite')
+      .post('/api/auth/invite')
       .set('Authorization', `Bearer ${viewerToken}`)
       .send({ email: 'new@test.com', password: 'pass789' });
 
@@ -114,7 +114,7 @@ describe('Auth', () => {
 
     // Admin can access
     const adminInvite = await request(app)
-      .post('/auth/invite')
+      .post('/api/auth/invite')
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ email: 'new@test.com', password: 'pass789' });
 

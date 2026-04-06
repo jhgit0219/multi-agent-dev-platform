@@ -6,7 +6,7 @@ import { requireAuth, requireRole, JWT_SECRET, type AuthRequest } from './middle
 
 const router = Router();
 
-router.post('/auth/register', async (req, res) => {
+router.post('/api/auth/register', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ error: 'Email and password required' });
@@ -29,7 +29,7 @@ router.post('/auth/register', async (req, res) => {
   });
 });
 
-router.post('/auth/login', async (req, res) => {
+router.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ error: 'Email and password required' });
@@ -55,11 +55,11 @@ router.post('/auth/login', async (req, res) => {
   });
 });
 
-router.get('/auth/me', requireAuth, (req: AuthRequest, res) => {
+router.get('/api/auth/me', requireAuth, (req: AuthRequest, res) => {
   res.json({ user: req.user });
 });
 
-router.post('/auth/invite', requireAuth, requireRole('admin'), async (req: AuthRequest, res) => {
+router.post('/api/auth/invite', requireAuth, requireRole('admin'), async (req: AuthRequest, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ error: 'Email and password required' });

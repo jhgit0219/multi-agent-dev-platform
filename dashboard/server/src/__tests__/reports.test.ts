@@ -27,7 +27,7 @@ describe('Reports API', () => {
 
     // Register and get token
     const res = await request(app)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send({ email: 'admin@test.com', password: 'pass123' });
     token = res.body.token;
 
