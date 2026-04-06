@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { getStoredToken } from "../api/auth";
+import { authFetch } from "../api/auth";
 
 interface User {
   id: string;
@@ -16,10 +16,7 @@ export default function UserManagement() {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    const token = getStoredToken();
-    fetch("/api/users", {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
+    authFetch("/api/users")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch users");
         return res.json() as Promise<{ users?: User[] }>;
@@ -32,14 +29,9 @@ export default function UserManagement() {
     e.preventDefault();
     setError("");
     setSuccess("");
-    const token = getStoredToken();
     try {
-      const res = await fetch("/api/users/invite", {
+      const res = await authFetch("/api/users/invite", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
         body: JSON.stringify({ email: inviteEmail, role: inviteRole }),
       });
       if (!res.ok) {

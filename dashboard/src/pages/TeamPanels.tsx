@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { authFetch } from "../api/auth";
 import TeamPanel, { type TeamPanelData } from "../components/TeamPanel";
 
 const defaultTeams: TeamPanelData[] = [
@@ -14,7 +15,7 @@ export default function TeamPanels() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/reports/teams")
+    authFetch("/api/reports/teams")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json() as Promise<{ teams?: TeamPanelData[] }>;

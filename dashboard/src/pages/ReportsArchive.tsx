@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { authFetch } from "../api/auth";
 import ReportCard, { type ReportData } from "../components/ReportCard";
 
 export default function ReportsArchive() {
@@ -6,7 +7,7 @@ export default function ReportsArchive() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/reports")
+    authFetch("/api/reports")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json() as Promise<{ reports?: ReportData[] }>;

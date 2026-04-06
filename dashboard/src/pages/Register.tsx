@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { register } from "../api/auth";
+import { register, storeToken } from "../api/auth";
 
 export default function Register() {
   const [name, setName] = useState("");

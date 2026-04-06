@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ConfigSummary from "../components/ConfigSummary";
 import StatusBadge from "../components/StatusBadge";
+import { authFetch } from "../api/auth";
 
 interface IterationSummary {
   total: number;
@@ -26,7 +27,7 @@ export default function ProjectOverview() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/reports/iterations")
+    authFetch("/api/reports/iterations")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json() as Promise<ProjectData>;

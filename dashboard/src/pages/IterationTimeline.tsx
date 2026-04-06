@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { authFetch } from "../api/auth";
 import TimelineEntry, { type TimelineEntryData } from "../components/TimelineEntry";
 
 export default function IterationTimeline() {
@@ -6,7 +7,7 @@ export default function IterationTimeline() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/reports/iterations")
+    authFetch("/api/reports/iterations")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json() as Promise<{ entries?: TimelineEntryData[] }>;

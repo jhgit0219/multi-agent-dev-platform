@@ -70,5 +70,18 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
 }
 
 export async function getMe(): Promise<AuthUser> {
-  return request<AuthUser>("/api/auth/me");
+  const res = await request<{ user: AuthUser }>("/api/auth/me");
+  return res.user;
+}
+
+export async function authFetch(url: string, options?: RequestInit): Promise<Response> {
+  const token = getStoredToken();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options?.headers as Record<string, string>),
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return fetch(url, { ...options, headers });
 }
