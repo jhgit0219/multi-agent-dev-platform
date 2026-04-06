@@ -8,6 +8,7 @@ import authRoutes from './auth/routes.js';
 import reportRoutes from './reports/routes.js';
 import statusRoutes from './status/routes.js';
 import projectRoutes from './projects/routes.js';
+import agentRoutes from './agents/routes.js';
 import { createWSServer, broadcast } from './ws/server.js';
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(authRoutes);
 app.use(reportRoutes);
 app.use(statusRoutes);
 app.use(projectRoutes);
+app.use(agentRoutes);
 
 const server = createServer(app);
 

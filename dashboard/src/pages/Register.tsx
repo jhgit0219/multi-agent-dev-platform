@@ -28,8 +28,10 @@ export default function Register() {
     width: "100%",
     padding: "0.5rem",
     borderRadius: 4,
-    border: "1px solid #ccc",
+    border: "1px solid var(--border-default)",
     boxSizing: "border-box",
+    background: "var(--bg-input)",
+    color: "var(--text-primary)",
   };
 
   return (
@@ -39,35 +41,35 @@ export default function Register() {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        background: "#f4f4f8",
+        background: "var(--bg-primary)",
       }}
     >
       <form
         onSubmit={handleSubmit}
         style={{
-          background: "#fff",
+          background: "var(--bg-card)",
           padding: "2rem",
           borderRadius: 8,
-          border: "1px solid #ddd",
+          border: "1px solid var(--border-default)",
           width: 360,
         }}
       >
-        <h2 style={{ marginTop: 0 }}>Register</h2>
+        <h2 style={{ marginTop: 0, color: "var(--text-primary)" }}>Register</h2>
         {error && (
-          <div style={{ color: "#721c24", background: "#f8d7da", padding: "0.5rem", borderRadius: 4, marginBottom: "1rem" }}>
+          <div style={{ color: "var(--status-error)", background: "rgba(239,68,68,0.1)", padding: "0.5rem", borderRadius: 4, marginBottom: "1rem" }}>
             {error}
           </div>
         )}
         <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>Name</label>
+          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500, color: "var(--text-primary)" }}>Name</label>
           <input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} />
         </div>
         <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>Email</label>
+          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500, color: "var(--text-primary)" }}>Email</label>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={inputStyle} />
         </div>
         <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>Password</label>
+          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500, color: "var(--text-primary)" }}>Password</label>
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={inputStyle} />
         </div>
         <button
@@ -76,7 +78,7 @@ export default function Register() {
           style={{
             width: "100%",
             padding: "0.6rem",
-            background: "#0f3460",
+            background: "var(--accent-primary)",
             color: "#fff",
             border: "none",
             borderRadius: 4,
@@ -87,7 +89,7 @@ export default function Register() {
           {loading ? "Registering..." : "Register"}
         </button>
         <p style={{ textAlign: "center", marginTop: "1rem", fontSize: "0.9rem" }}>
-          Already have an account? <Link to="/login">Login</Link>
+          Already have an account? <Link to="/login" style={{ color: "var(--text-accent)" }}>Login</Link>
         </p>
       </form>
     </div>

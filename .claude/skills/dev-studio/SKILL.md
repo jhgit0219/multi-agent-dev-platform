@@ -101,6 +101,8 @@ Run phases sequentially. Use the **Agent tool** to spawn a specialist for each p
 
 Push event: `phase:start` with `{"phase":"planning","team":"feature"}`.
 
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/creative-director/status -H "Content-Type: application/json" -d '{"status":"active","message":"Starting feature planning..."}'`
+
 Spawn an Agent:
 - description: "Feature planning - iteration {n}"
 - prompt: Include the full project description and requirements. Tell the agent to:
@@ -109,6 +111,8 @@ Spawn an Agent:
   3. Use proposer/challenger/refiner pattern (propose architecture, critique it, refine)
   4. Write proposal to `.studio/iterations/{n}/feature/proposal.md`
   5. Write prioritized backlog to `.studio/iterations/{n}/feature/backlog.json`
+
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/creative-director/status -H "Content-Type: application/json" -d '{"status":"complete","message":"Finished feature planning"}'`
 
 Push event: `phase:complete` with `{"phase":"planning","team":"feature","status":"success"}`.
 
@@ -119,6 +123,10 @@ After agent returns, display the proposal summary.
 ### Phase 2: Development
 
 Push event: `phase:start` with `{"phase":"build","team":"dev"}`.
+
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/backend-engineer/status -H "Content-Type: application/json" -d '{"status":"active","message":"Starting backend development..."}'`
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/frontend-engineer/status -H "Content-Type: application/json" -d '{"status":"active","message":"Starting frontend development..."}'`
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/database-engineer/status -H "Content-Type: application/json" -d '{"status":"active","message":"Starting database setup..."}'`
 
 **Spawn these agents IN PARALLEL** (all in a single message with multiple Agent tool calls):
 
@@ -149,7 +157,15 @@ Push event: `phase:start` with `{"phase":"build","team":"dev"}`.
   4. Create schema, migrations, seed data
   5. Write output to `.studio/iterations/{n}/dev/database_report.json`
 
-After ALL three return, spawn one more agent to integrate:
+After ALL three return:
+
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/backend-engineer/status -H "Content-Type: application/json" -d '{"status":"complete","message":"Finished backend development"}'`
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/frontend-engineer/status -H "Content-Type: application/json" -d '{"status":"complete","message":"Finished frontend development"}'`
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/database-engineer/status -H "Content-Type: application/json" -d '{"status":"complete","message":"Finished database setup"}'`
+
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/lead-engineer/status -H "Content-Type: application/json" -d '{"status":"active","message":"Starting dev integration..."}'`
+
+Spawn one more agent to integrate:
 
 **Agent D — Lead Engineer (integration):**
 - description: "Dev integration - iteration {n}"
@@ -160,11 +176,17 @@ After ALL three return, spawn one more agent to integrate:
   4. Verify imports, API contracts, and types align
   5. Write final dev report to `.studio/iterations/{n}/dev/dev_report.json`
 
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/lead-engineer/status -H "Content-Type: application/json" -d '{"status":"complete","message":"Finished dev integration"}'`
+
 Push event: `phase:complete` with `{"phase":"build","team":"dev","status":"success"}`.
 
 ### Phase 3+4: Testing & Security Audit (PARALLEL)
 
 Push events: `phase:start` for both `validate` and `security` phases.
+
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/qa-lead/status -H "Content-Type: application/json" -d '{"status":"active","message":"Starting testing..."}'`
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/security-lead/status -H "Content-Type: application/json" -d '{"status":"active","message":"Starting security audit..."}'`
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/performance-analyst/status -H "Content-Type: application/json" -d '{"status":"active","message":"Starting performance review..."}'`
 
 **Spawn these agents IN PARALLEL** (single message, multiple Agent tool calls):
 
@@ -192,7 +214,13 @@ Push events: `phase:start` for both `validate` and `security` phases.
   2. Review the code for performance issues (N+1 queries, missing indexes, unbounded loops, memory leaks)
   3. Write findings to `.studio/iterations/{n}/test/perf_report.json`
 
-Push events: `phase:complete` for both phases after ALL agents return.
+After ALL agents return:
+
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/qa-lead/status -H "Content-Type: application/json" -d '{"status":"complete","message":"Finished testing"}'`
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/security-lead/status -H "Content-Type: application/json" -d '{"status":"complete","message":"Finished security audit"}'`
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/performance-analyst/status -H "Content-Type: application/json" -d '{"status":"complete","message":"Finished performance review"}'`
+
+Push events: `phase:complete` for both phases.
 
 On critical failures from any agent:
 - Interactive: AskUserQuestion (Loop back to dev / Continue / Abort)
@@ -202,6 +230,8 @@ On critical failures from any agent:
 
 Push event: `phase:start` with `{"phase":"ship","team":"devops"}`.
 
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/devops-lead/status -H "Content-Type: application/json" -d '{"status":"active","message":"Starting DevOps..."}'`
+
 Spawn an Agent:
 - description: "DevOps - iteration {n}"
 - prompt: Tell the agent to:
@@ -209,6 +239,8 @@ Spawn an Agent:
   2. Read standards from `standards/devops/`
   3. Generate Dockerfile, CI/CD config, deployment scripts
   4. Write to `.studio/iterations/{n}/devops/deploy_report.json`
+
+Push agent status: `curl -s -X POST http://localhost:3001/api/agents/devops-lead/status -H "Content-Type: application/json" -d '{"status":"complete","message":"Finished DevOps"}'`
 
 Push event: `phase:complete` with `{"phase":"ship","team":"devops","status":"success"}`.
 

@@ -31,27 +31,27 @@ export default function Login() {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        background: "#f4f4f8",
+        background: "var(--bg-primary)",
       }}
     >
       <form
         onSubmit={handleSubmit}
         style={{
-          background: "#fff",
+          background: "var(--bg-card)",
           padding: "2rem",
           borderRadius: 8,
-          border: "1px solid #ddd",
+          border: "1px solid var(--border-default)",
           width: 360,
         }}
       >
-        <h2 style={{ marginTop: 0 }}>Login</h2>
+        <h2 style={{ marginTop: 0, color: "var(--text-primary)" }}>Login</h2>
         {error && (
-          <div style={{ color: "#721c24", background: "#f8d7da", padding: "0.5rem", borderRadius: 4, marginBottom: "1rem" }}>
+          <div style={{ color: "var(--status-error)", background: "rgba(239,68,68,0.1)", padding: "0.5rem", borderRadius: 4, marginBottom: "1rem" }}>
             {error}
           </div>
         )}
         <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>
+          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500, color: "var(--text-primary)" }}>
             Email
           </label>
           <input
@@ -59,11 +59,11 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width: "100%", padding: "0.5rem", borderRadius: 4, border: "1px solid #ccc", boxSizing: "border-box" }}
+            style={{ width: "100%", padding: "0.5rem", borderRadius: 4, border: "1px solid var(--border-default)", boxSizing: "border-box", background: "var(--bg-input)", color: "var(--text-primary)" }}
           />
         </div>
         <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>
+          <label style={{ display: "block", marginBottom: "0.3rem", fontWeight: 500, color: "var(--text-primary)" }}>
             Password
           </label>
           <input
@@ -71,7 +71,7 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ width: "100%", padding: "0.5rem", borderRadius: 4, border: "1px solid #ccc", boxSizing: "border-box" }}
+            style={{ width: "100%", padding: "0.5rem", borderRadius: 4, border: "1px solid var(--border-default)", boxSizing: "border-box", background: "var(--bg-input)", color: "var(--text-primary)" }}
           />
         </div>
         <button
@@ -80,7 +80,7 @@ export default function Login() {
           style={{
             width: "100%",
             padding: "0.6rem",
-            background: "#0f3460",
+            background: "var(--accent-primary)",
             color: "#fff",
             border: "none",
             borderRadius: 4,
@@ -91,7 +91,7 @@ export default function Login() {
           {loading ? "Logging in..." : "Login"}
         </button>
         <p style={{ textAlign: "center", marginTop: "1rem", fontSize: "0.9rem" }}>
-          Don't have an account? <Link to="/register">Register</Link>
+          Don't have an account? <Link to="/register" style={{ color: "var(--text-accent)" }}>Register</Link>
         </p>
       </form>
     </div>
