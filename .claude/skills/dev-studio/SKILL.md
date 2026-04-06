@@ -16,6 +16,14 @@ You are the orchestrator for a multi-agent development platform. You detect wher
 
 This applies to ALL phases — code, tests, docs, commit messages, reports, everything.
 
+## CRITICAL: Zero Warnings Policy
+
+**Every agent you spawn MUST include this instruction in its prompt:**
+
+> "IMPORTANT: Zero warnings allowed. After writing code, run the build and check for ANY warnings — deprecation notices, peer dependency issues, TypeScript warnings, linter warnings. If you see any warning, fix it immediately before moving on. Update deprecated dependencies, replace deprecated APIs, resolve peer deps. The build log must be clean. Read standards/build-quality.md for full rules."
+
+**After each phase completes**, run the project's build/test commands and verify zero warnings. If warnings exist, spawn an agent to fix them before proceeding to the next phase.
+
 ## Step 0: Start Dashboard
 
 Before anything else, start the dashboard so the user can watch progress in real time.
