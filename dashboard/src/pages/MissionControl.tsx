@@ -35,7 +35,7 @@ export default function MissionControl() {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [agents, setAgents] = useState<AgentInfo[]>([]);
   const [viewMode, setViewMode] = useState<'all' | 'tier' | 'department'>('all');
-  const [expandedAgent, setExpandedAgent] = useState<string | null>(null);
+  const [collapsedAgents, setCollapsedAgents] = useState<Set<string>>(new Set());
   const [agentMessages, setAgentMessages] = useState<Record<string, Message[]>>({});
   const [logCollapsed, setLogCollapsed] = useState(true);
   const [currentPhase, setCurrentPhase] = useState<string | null>(null);
@@ -148,7 +148,20 @@ export default function MissionControl() {
   }, [events.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleToggleExpand = useCallback((id: string) => {
-    setExpandedAgent((prev) => (prev === id ? null : id));
+    setCollapsedAgents((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const handleCollapseAll = useCallback(() => {
+    setCollapsedAgents(new Set(agents.map((a) => a.id)));
+  }, [agents]);
+
+  const handleExpandAll = useCallback(() => {
+    setCollapsedAgents(new Set());
   }, []);
 
   const handleSendMessage = useCallback(
@@ -193,11 +206,13 @@ export default function MissionControl() {
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         wsConnected={connected}
+        onExpandAll={handleExpandAll}
+        onCollapseAll={handleCollapseAll}
       />
       <AgentGrid
         agents={agents}
         viewMode={viewMode}
-        expandedId={expandedAgent}
+        collapsedIds={collapsedAgents}
         onToggleExpand={handleToggleExpand}
         onSendMessage={handleSendMessage}
         agentMessages={agentMessages}

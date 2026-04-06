@@ -6,7 +6,20 @@ interface TopBarProps {
   viewMode: 'all' | 'tier' | 'department';
   onViewModeChange: (mode: 'all' | 'tier' | 'department') => void;
   wsConnected: boolean;
+  onExpandAll: () => void;
+  onCollapseAll: () => void;
 }
+
+const toggleBtnStyle: React.CSSProperties = {
+  background: 'transparent',
+  color: 'var(--text-secondary)',
+  border: '1px solid var(--border-default)',
+  borderRadius: 'var(--radius-sm)',
+  padding: '0.3rem 0.6rem',
+  fontSize: '0.7rem',
+  cursor: 'pointer',
+  fontWeight: 500,
+};
 
 const PHASES = ['Planning', 'Build', 'Validate', 'Ship', 'Report'];
 
@@ -18,6 +31,8 @@ export default function TopBar({
   viewMode,
   onViewModeChange,
   wsConnected,
+  onExpandAll,
+  onCollapseAll,
 }: TopBarProps) {
   const currentIndex = currentPhase ? PHASES.findIndex(p => p.toLowerCase() === currentPhase.toLowerCase()) : -1;
 
@@ -95,8 +110,12 @@ export default function TopBar({
         })}
       </div>
 
-      {/* Right: View Toggle + WS Indicator */}
+      {/* Right: Expand/Collapse + View Toggle + WS Indicator */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--gap-md)' }}>
+        <div style={{ display: 'flex', gap: '0.3rem' }}>
+          <button onClick={onExpandAll} style={toggleBtnStyle}>Expand All</button>
+          <button onClick={onCollapseAll} style={toggleBtnStyle}>Collapse All</button>
+        </div>
         <div
           style={{
             display: 'flex',
